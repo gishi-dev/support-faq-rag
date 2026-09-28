@@ -154,7 +154,7 @@ def unanswered_tab(logbook: Logbook) -> None:
     for row in rows:
         with st.container(border=True):
             st.markdown(f"**{row['question']}**")
-            st.caption(f"{row['asked_at']}　状態：{STATUSES[row['status']]}")
+            st.caption(f"{row['asked_at'].replace('T', ' ')}　状態：{STATUSES[row['status']]}")
             with st.form(f"status-{row['id']}"):
                 status = st.selectbox(
                     "状態",

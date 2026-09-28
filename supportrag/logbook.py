@@ -11,27 +11,28 @@ from pathlib import Path
 STATUSES = {"open": "未対応", "added": "FAQに追加済み", "ignored": "対応しない"}
 
 
+_SCHEMA = """create table if not exists questions (
+    id integer primary key,
+    asked_at text not null,
+    question text not null,
+    answered integer not null,
+    sources text not null,
+    model text not null,
+    status text not null default 'open',
+    note text not null default ''
+)"""
+
+
 class Logbook:
     def __init__(self, path: Path) -> None:
-        path.parent.mkdir(parents=True, exist_ok=True)
         self.path = path
-        with closing(self._connect()) as db, db:
-            db.execute(
-                """create table if not exists questions (
-                    id integer primary key,
-                    asked_at text not null,
-                    question text not null,
-                    answered integer not null,
-                    sources text not null,
-                    model text not null,
-                    status text not null default 'open',
-                    note text not null default ''
-                )"""
-            )
 
     def _connect(self) -> sqlite3.Connection:
+        # 画面は同じ Logbook を使い回すため、起動中に記録ファイルを消しても作り直せるよう毎回確かめる。
+        self.path.parent.mkdir(parents=True, exist_ok=True)
         db = sqlite3.connect(self.path)
         db.row_factory = sqlite3.Row
+        db.execute(_SCHEMA)
         return db
 
     def record(self, question: str, answered: bool, sources: list[str], model: str) -> None:

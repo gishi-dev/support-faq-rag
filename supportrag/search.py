@@ -72,8 +72,10 @@ def _load_embedder(model: str, cache_dir: Path):
     from huggingface_hub import snapshot_download
 
     info = next(m for m in TextEmbedding.list_supported_models() if m["model"] == model)
-    path = snapshot_download(info["sources"]["hf"], local_dir=cache_dir / "models" / model.split("/")[-1])
-    return TextEmbedding(model, specific_model_path=path)
+    path = cache_dir / "models" / model.split("/")[-1]
+    if not (path / info["model_file"]).exists():
+        snapshot_download(info["sources"]["hf"], local_dir=path)
+    return TextEmbedding(model, specific_model_path=str(path))
 
 
 class HybridSearcher:

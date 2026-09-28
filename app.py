@@ -181,13 +181,13 @@ def docs_tab(searcher: HybridSearcher) -> None:
 
 
 def main() -> None:
-    st.set_page_config(page_title="ソヨカ電機 サポートAI（デモ）", page_icon="💬", layout="wide")
+    st.set_page_config(page_title="ギシ電機 サポートAI（デモ）", page_icon="💬", layout="wide")
     st.session_state.setdefault("turns", [])
     searcher = get_searcher(fingerprint(load_chunks(DOCS_DIR)))
     logbook = get_logbook()
 
     with st.sidebar:
-        st.title("ソヨカ電機 サポートAI")
+        st.title("ギシ電機 サポートAI")
         st.caption("架空の家電メーカーの製品資料で動くデモです。実在の会社・製品とは関係ありません。")
         st.subheader("質問の例")
         for example in EXAMPLES:
